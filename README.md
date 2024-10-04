@@ -1,6 +1,8 @@
 The paper can be found here: 
 F. Satter and S. M. Masudul Ahsan, "Open Vocabulary Word Recognition From Transcribed Bangla Texts," 2023 26th International Conference on Computer and Information Technology (ICCIT), Cox's Bazar, Bangladesh, 2023, pp. 1-6, doi: 10.1109/ICCIT60459.2023.10441393.
 
+Cite the paper if you follow this code.
+
 Steps to Reproduce : 
 1. Download The files
 2. Place them in "https://drive.google.com/drive/my-drive"
