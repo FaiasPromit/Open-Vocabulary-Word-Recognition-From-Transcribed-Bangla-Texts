@@ -1,30 +1,42 @@
 # Open Vocabulary Word Recognition From Transcribed Bangla Texts
 
-Code for the paper **"Open Vocabulary Word Recognition From Transcribed Bangla Texts"** (ICCIT 2023).
+Code for the ICCIT 2023 paper by Faias Satter and Sk. Md. Masudul Ahsan.
 
-Paper: [IEEE](https://doi.org/10.1109/ICCIT60459.2023.10441393) · [arXiv](https://arxiv.org/abs/2610.01134)  
-Thesis and related papers: [Optical Character Recognition From Handwritten Bangla Texts](https://github.com/FaiasPromit/Optical-Character-Recognition-From-Handwritten-Bangla-Texts)
+[arXiv](https://arxiv.org/abs/2610.01134) · [IEEE](https://doi.org/10.1109/ICCIT60459.2023.10441393) · [Thesis](https://github.com/FaiasPromit/Optical-Character-Recognition-From-Handwritten-Bangla-Texts)
 
-The code recognizes handwritten Bangla words by detecting each character with two object detection models, SSD with MobileNetV2 and Faster R-CNN with InceptionResNetV2, and combining them in an ensemble. Because it works character by character, it is not limited to a fixed vocabulary.
+## Setup
 
-## How to run
+Download [PromitoLipi2.1](https://data.mendeley.com/datasets/fnw59h7y89/2). The TensorFlow models checkout, pipeline configs, trained weights and train/test split must be supplied separately.
 
-The code runs in Google Colab.
+Open the notebook in Jupyter or Colab and edit its configuration cell. Set `USE_GOOGLE_DRIVE = True` to mount Drive, or leave it `False` for local paths. The default folders beneath `BASE_DIR` are:
 
-1. Download the files from this repository.
-2. Upload them to the top level of your Google Drive (My Drive).
-3. Unzip `Zip Folder of Models`.
-4. Move the `models(1)` folder into the same folder as `CustomTF2`.
-5. Open the notebook you need in Google Colab and run it.
+| Path | Contents |
+|---|---|
+| `models/research` | TensorFlow Object Detection API checkout |
+| `customTF2/data/images` | Training/test images referenced by the CSVs |
+| `customTF2/data/train_labels`, `test_labels` | Training/test XML annotations |
+| `customTF2/data/Test` | Test BMP images and XMLs with matching filenames |
+| `customTF2/data/label_map.pbtxt` | Numeric class names and IDs 1–92 |
+| `customTF2/data/inference_graph/saved_model` | SSD model |
+| `customTF2/data/inference_graph (1)/saved_model` | Faster R-CNN model |
 
-## Notes before you start
+`requirements-notebook.txt` lists supporting packages for Python 3.10 / TensorFlow 2.13. The two `requirements-*-historical.txt` files record versions found in the training and inference logs; they are partial dependency lists. Use separate environments for the two stacks.
 
-- **Training:** each training notebook includes step-by-step instructions. Follow them. The main files you need are already provided.
-- **Testing:** the test notebooks are not meant to be run top to bottom. Read the note above each cell to see whether to run it or skip it.
+For API setup, provide a compatible TensorFlow models checkout and `protoc`, then enable `INSTALL_OBJECT_DETECTION`. Restart the kernel afterward and set the flag back to `False`.
 
-## Dataset
+## Training
 
-The full dataset, PromitoLipi, is available on [Mendeley Data](https://data.mendeley.com/datasets/fnw59h7y89/2). The word images and their annotations are in the `PromitoLipi2.1` folder.
+Use `Train_SSD.ipynb` or `Train_Faster_RCNN.ipynb`. Set the pipeline config, data and checkpoint paths, including paths inside the config itself. Place `generate_tfrecord.py` at the configured helper path.
+
+Run cells in order. Set `GENERATE_RECORDS = False` to reuse existing records. Each model has a separate `MODEL_DIR`; an existing checkpoint resumes training. `RUN_TRAINING` and `RUN_EXPORT` control those stages. Checkpoint evaluation can wait for new checkpoints, so `RUN_EVALUATION` is off by default and can be run separately.
+
+## Testing
+
+Use `SSD_Test_Result.ipynb`, `Faster_RCNN_Test_Result.ipynb` or `Ensemble_Model_Test_Result.ipynb`.
+
+Set `EXPERIMENT = 'full'` for the complete method. The single-model notebooks also support `no_pno` and `no_nms_pno`. Enable `RUN_WORD_EVALUATION` for Levenshtein scoring, then run cells in order.
+
+Results are saved as `recognized.txt` and `results.json` in `OUTPUT_DIR`. Choose an empty output directory for each run. Character counters use the notebook's first-match IoU > 0.4 rule; a wrong-class match counts as FP without an additional FN.
 
 ## Citation
 

@@ -1,0 +1,8 @@
+# Package versions recorded in the notebook logs; partial dependency list.
+tensorflow==2.13.0
+keras==2.13.1
+tensorflow-estimator==2.13.0
+tensorflow-text==2.13.0
+tf-models-official==2.13.1
+tensorflow-model-optimization==0.7.5
+tensorflow-io==0.33.0
